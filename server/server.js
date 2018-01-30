@@ -20,8 +20,8 @@ app.post('/todos',(req,res) =>{
     });
 });
 
-
-
 app.listen(3000,() => {
     console.log('Start on Port 3000');
-})
+});
+
+module.exports = {app};
