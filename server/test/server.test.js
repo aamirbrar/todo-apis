@@ -1,13 +1,16 @@
 const expect = require('expect');
 const request = require('supertest');
-
+const {ObjectID} = require('mongodb');
 const {app} = require('./../server');
 
 const {Todo} = require('./../models/todo');
 
 const todos = [{
+    _id:new ObjectID(),
     text:'first'},{
-    text:'second' }
+    _id:new ObjectID(),
+     text:'second'
+     }
    ];
 
 beforeEach((done) => {
@@ -66,4 +69,36 @@ describe('GET /todos',() => {
           })
           .end(done);
     } )
+});
+
+describe('GET /todos',() => {
+  it('should return todo doc',(done) => {
+      request(app)
+         .get(`/todos/${todos[0]._id.toHexString()}`)
+         .expect(200)
+         .expect((res) =>{
+             expect(res.body.todo.text).toBe(todos[0].text)
+         })
+         .end(done);
+  })
+
+  it('should return 404',(done) =>{
+    request(app)
+    .get(`/todos/5a707b5e0c9bfa4f3d9a3bc2`)
+     .expect(400)
+     .expect((res) =>{
+         expect(res.body).toEqual({msg:'No User Found'})
+     })
+     .end(done);
+  });
+
+  it('should return 404 for non-object',(done) =>{
+      request(app)
+        .get(`/todos/123`)
+         .expect(400)
+         .expect((res) =>{
+             expect(res.body).toEqual({msg:'Invalid Id'})
+         })
+         .end(done);
+  });
 });
