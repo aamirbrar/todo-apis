@@ -117,7 +117,7 @@ describe('DELETE /todos',() => {
                    return done(err);
                }
                Todo.findById(haxid).then((todo) => {
-                   expect(todo).toEqual({msg:'Invalid Id'});
+                   expect(todo).toBe(null);
                    done();
                }).catch((e) => done(e))
            });
